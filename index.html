@@ -99,7 +99,7 @@
         /* ======================================================================
          * DESACOPLAMENTO DE API (?mps3=<IP>) & CLOUD HOT-SWAP (GitHub Pages CDN)
          * ====================================================================== */
-        window.MPS3_WEB_BUILD_HASH = "a36553d623e1";
+        window.MPS3_WEB_BUILD_HASH = "8cee6833417f";
         window.MPS3_DEFAULT_CLOUD_URL = "https://thall-is.github.io/mps3-web";
         window.MPS3_FALLBACK_RAW_URL = "https://raw.githubusercontent.com/thall-is/mps3-web/main";
 
@@ -4921,7 +4921,20 @@
                 if (!allAudio.length) return null;
 
                 const nonDrc = allAudio.filter(f => !f.isDrc);
-                const audioFormats = nonDrc.length ? nonDrc : allAudio;
+                const baseAudio = nonDrc.length ? nonDrc : allAudio;
+
+                // Prioriza a faixa de áudio original (pt-BR / audioIsDefault) em vez de dublagem automática IA (dubbed-auto)
+                const origTracks = baseAudio.filter(f => {
+                    if (f.audioTrack) {
+                        if (f.audioTrack.isAutoDubbed) return false;
+                        if (f.audioTrack.audioIsDefault) return true;
+                    }
+                    const u = String(f.url || '');
+                    if (u.includes('dubbed-auto')) return false;
+                    if (u.includes('acont%3Doriginal') || u.includes('acont=original')) return true;
+                    return !u.includes('acont%3Ddubbed') && !u.includes('acont=dubbed');
+                });
+                const audioFormats = origTracks.length ? origTracks : baseAudio;
 
                 const itag140 = audioFormats.find(f => f.itag === 140);
                 const itag139 = audioFormats.find(f => f.itag === 139);
@@ -5431,7 +5444,7 @@
             'videoRenderer(videoId,title,lengthText,badges,thumbnailOverlays,publishedTimeText,upcomingEventData))';
 
         const YT_PLAYER_FIELDS_MASK =
-            'playabilityStatus,videoDetails(videoId,title,lengthSeconds),streamingData.adaptiveFormats(itag,url,mimeType,bitrate,contentLength,isDrc)';
+            'playabilityStatus,videoDetails(videoId,title,lengthSeconds),streamingData.adaptiveFormats(itag,url,mimeType,bitrate,contentLength,isDrc,audioTrack)';
 
         async function mps3InnertubeRelay(meta, postBodyObj = null, timeoutMs = 18000) {
             const bodyStr = postBodyObj
@@ -5817,7 +5830,7 @@
         let podSyncAbortCtrl = null;
         let isPodSyncing = false;
 
-        async function pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, idx, totalCount) {
+        async function pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, idx, totalCount, batchTotal = 0, displayTitle = '') {
             let cleanUrl = String(mediaUrl || '');
             const embMatch = cleanUrl.match(/\/podcast\/play\/[^/]+\/(https?%3A%2F%2F.+)$/i);
             if (embMatch) {
@@ -5842,11 +5855,13 @@
                     body: JSON.stringify({
                         url: fragUrls[f],
                         staging_path: stagingPath,
+                        title: displayTitle || '',
                         ua: resolvedUserAgent || '',
                         append: f > 0 ? 1 : 0,
                         idx: idx,
                         count: totalCount,
                         total_bytes: resolvedContentLength || 0,
+                        batch_total: batchTotal || 0,
                         offset_bytes: offsetBytes
                     }),
                     signal: podSyncAbortCtrl.signal
@@ -6474,7 +6489,21 @@
 
                         if (!forceReencode && isNoCorsCdn && !(window.__MPS3_YT_BRIDGE__ && typeof window.__MPS3_YT_BRIDGE__.downloadAudioBytes === 'function')) {
                             document.getElementById('podCurrentItem').textContent = `[${i + 1}/${totalCount}] Baixando direto p/ SD: ${ep.title}`;
-                            await pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, i + 1, totalCount);
+                            try {
+                                await pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, i + 1, totalCount, batchTotal, ep.title);
+                            } catch (pullErr) {
+                                if (ep.source_type === 'youtube' && String(pullErr && pullErr.message).includes('403')) {
+                                    window.__mps3YtVisitorData = '';
+                                    document.getElementById('podCurrentItem').textContent = `[${i + 1}/${totalCount}] Renovando token YT (403)...`;
+                                    const fresh = await resolveYoutubeAudioStream({ ...ep, direct_url: null });
+                                    mediaUrl = fresh.url;
+                                    if (fresh.contentLength) resolvedContentLength = fresh.contentLength;
+                                    if (fresh.userAgent) resolvedUserAgent = fresh.userAgent;
+                                    await pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, i + 1, totalCount, batchTotal, ep.title);
+                                } else {
+                                    throw pullErr;
+                                }
+                            }
                             pulledDirectlyOnMps3 = true;
                         }
 
@@ -6493,7 +6522,7 @@
                                         audioBytes = await window.__MPS3_YT_BRIDGE__.downloadAudioBytes(mediaUrl, 0);
                                     } else if (!forceReencode) {
                                         document.getElementById('podCurrentItem').textContent = `[${i + 1}/${totalCount}] Baixando direto p/ SD: ${ep.title}`;
-                                        await pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, i + 1, totalCount);
+                                        await pullEpisodeDirectOnMps3(mediaUrl, stagingPath, resolvedContentLength, resolvedUserAgent, i + 1, totalCount, batchTotal, ep.title);
                                         pulledDirectlyOnMps3 = true;
                                     } else {
                                         resp = await fetch('/api/dev/rss_proxy?url=' + encodeURIComponent(mediaUrl));
@@ -6558,7 +6587,7 @@
                                 document.getElementById('podCurrentItem').textContent = `[${i + 1}/${totalCount}] Gravando no SD: ${finalFilename}`;
                                 await new Promise((resolve, reject) => {
                                     podSyncXhr = new XMLHttpRequest();
-                                    const uploadUrl = `/api/upload?path=${encodeURIComponent(stagingPath)}&idx=${i + 1}&count=${totalCount}&batchTotal=${batchTotal}`;
+                                    const uploadUrl = `/api/upload?path=${encodeURIComponent(stagingPath)}&idx=${i + 1}&count=${totalCount}&batchTotal=${batchTotal}&title=${encodeURIComponent(ep.title || '')}`;
                                     podSyncXhr.open('PUT', uploadUrl, true);
                                     podSyncXhr.setRequestHeader('X-Expected-SHA256', expectedSha256);
                                     podSyncXhr.timeout = 600000;
