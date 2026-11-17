@@ -1,0 +1,19 @@
+{
+  "id": "space_impact_2",
+  "name": "Space Impact II",
+  "version": "1.0.1",
+  "author": "MPS3",
+  "category": "Jogos",
+  "min_fw_ver": "v2.5",
+  "description": "Sequencia Nokia 3510 (2002): sprites e cenario originais (nuvens, montanhas, base e teto), 6 inimigos, escudo e 6 chefes.",
+  "changelog": "Substituidas bordas procedurais pelos 18 tiles de cenario originais Nokia (0..17.dat) e removidos pilares artificiais.",
+  "controls": [
+    "DIRECOES: Mover nave",
+    "VOL+: Atirar laser",
+    "VOL-: Arma especial",
+    "CENTRO: Pausar (1.5s: Sair)"
+  ],
+  "api_ver": 1,
+  "sha256": "7d0b7e2bd6bd01d9c48fa85b185e25ca2ee58a27c2dbff804af7f62f19e2bfad",
+  "size": 13216
+}
