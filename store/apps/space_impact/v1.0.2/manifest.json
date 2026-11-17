@@ -1,0 +1,19 @@
+{
+  "id": "space_impact",
+  "name": "Space Impact",
+  "version": "1.0.2",
+  "author": "MPS3",
+  "category": "Jogos",
+  "min_fw_ver": "v2.5",
+  "description": "Classico Nokia 3310 horizontal com tela de abertura original, sprites pixel-art, 3 chefes e modo Debug.",
+  "changelog": "Adicionada tela de boot/capa original SPACE IMPACT (2.6s) com animacao e sprites Nokia 3310.",
+  "controls": [
+    "DIRECOES: Mover nave",
+    "VOL+: Atirar laser",
+    "VOL-: Missil especial",
+    "CENTRO: Pausar (1.5s: Sair)"
+  ],
+  "api_ver": 1,
+  "sha256": "9dbbdbb184fc54d53a6801931069a74cad7a886a380e910660b8114bac302687",
+  "size": 8996
+}
