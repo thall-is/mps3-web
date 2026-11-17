@@ -4,12 +4,12 @@
     {
       "id": "space_impact",
       "name": "Space Impact",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "MPS3",
       "category": "Jogos",
       "min_fw_ver": "v2.5",
-      "description": "Classico Nokia 3310 horizontal com ondas de inimigos, power-ups, chefe de fase e recorde na NVS.",
-      "changelog": "Controles completos com VOL+ (tiro laser), VOL- (missil), CENTRO (pausa/1.5s sair) e D-pad.",
+      "description": "Classico Nokia 3310 horizontal com sprites originais, ondas de inimigos, power-ups, 3 chefes e modo Debug.",
+      "changelog": "Sprites pixel-perfect originais do Nokia 3310 (nave, 5 inimigos, 3 chefes, icones HUD) + tela DEBUG SPR na Pausa.",
       "controls": [
         "DIRECOES: Mover nave",
         "VOL+: Atirar laser",
@@ -17,10 +17,10 @@
         "CENTRO: Pausar (1.5s: Sair)"
       ],
       "api_ver": 1,
-      "size": 5668,
-      "sha256": "fb4f55823c4ce0cc261086194a1dbf1f113b875779d5b13a00c0cce5eae0af2b",
-      "elf_url": "apps/space_impact/v1.0.0/app.elf",
-      "manifest_url": "apps/space_impact/v1.0.0/manifest.json"
+      "size": 8924,
+      "sha256": "958b2d99cd0ae86443a54b4cc0aa8d26417765ae911b45c2779d9d0eef9471f3",
+      "elf_url": "apps/space_impact/v1.0.1/app.elf",
+      "manifest_url": "apps/space_impact/v1.0.1/manifest.json"
     },
     {
       "id": "tetris",
