@@ -4,12 +4,12 @@
     {
       "id": "space_impact",
       "name": "Space Impact",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "author": "MPS3",
       "category": "Jogos",
       "min_fw_ver": "v2.5",
       "description": "Classico Nokia 3310 completo: abertura original, 3 armas especiais, cavernas/terreno, 6 chefes animados e modo Debug.",
-      "changelog": "Armas especiais Mega Beam + Energy Wall, terreno/cavernas na Fase 2+, e 6 chefes originais Nokia.",
+      "changelog": "Adicionada opcao VIDA INF (ON/OFF) no menu de Pausa para debug e testes de fase.",
       "controls": [
         "DIRECOES: Mover nave",
         "VOL+: Atirar laser",
@@ -17,10 +17,10 @@
         "CENTRO: Pausar (1.5s: Sair)"
       ],
       "api_ver": 1,
-      "size": 11264,
-      "sha256": "30ef849dd8c0fb51911f13f762398eef8f95d8661aa2cd5dd7faa39066911883",
-      "elf_url": "apps/space_impact/v1.1.1/app.elf",
-      "manifest_url": "apps/space_impact/v1.1.1/manifest.json"
+      "size": 11500,
+      "sha256": "fc121e9d6a44a9d27f56ff027d8f183c82907fe6a5812dfdf0db272d42c601b1",
+      "elf_url": "apps/space_impact/v1.1.2/app.elf",
+      "manifest_url": "apps/space_impact/v1.1.2/manifest.json"
     },
     {
       "id": "tetris",
