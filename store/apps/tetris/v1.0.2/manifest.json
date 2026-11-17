@@ -1,0 +1,10 @@
+{
+  "id": "tetris",
+  "name": "Tetris",
+  "version": "1.0.2",
+  "author": "MPS3",
+  "description": "Tetris classico 10x20 com Ghost Piece, 7-Bag e High Score na NVS.",
+  "api_ver": 1,
+  "sha256": "ce1055282a2fd8f9e0dcdb55ad0780edee1aab962df40ab3a37958a933fd4b3a",
+  "size": 4884
+}

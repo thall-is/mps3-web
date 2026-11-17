@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MPS3 App Store — Catálogo de Capacidades &amp; Sub-Apps</title>
+  <style>
+    :root { --bg:#0b1120; --card:#131c31; --border:#253354; --txt:#e2e8f0; --muted:#94a3b8; --accent:#0ea5e9; --ok:#10b981; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:24px 16px; }
+    .wrap { max-width:840px; margin:0 auto; }
+    header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+    h1 { margin:0 0 6px; font-size:1.6rem; }
+    .sub { color:var(--muted); margin:0; font-size:0.92rem; max-width:600px; line-height:1.45; }
+    .pill { background:#0f2942; border:1px solid #0284c7; color:#7dd3fc; padding:6px 10px; border-radius:8px; font-size:0.8rem; text-decoration:none; font-weight:600; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+    .cats { display:flex; gap:6px; flex-wrap:wrap; }
+    .cat-btn { background:var(--card); color:var(--muted); border:1px solid var(--border); padding:5px 11px; border-radius:999px; cursor:pointer; font-size:0.82rem; font-weight:600; }
+    .cat-btn.active { background:var(--accent); color:#04101d; border-color:var(--accent); }
+    .grid { display:grid; grid-template-columns:1fr; gap:12px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+    .card h2 { margin:0 0 4px; font-size:1.08rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .badge { font-size:0.72rem; padding:2px 7px; border-radius:999px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; font-weight:600; }
+    .badge.ok { background:#064e3b; border-color:#10b981; color:#6ee7b7; }
+    .meta { font-size:0.82rem; color:var(--muted); margin-top:4px; line-height:1.4; }
+    .controls { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .ctrl { font-size:0.75rem; background:#0b1324; border:1px solid var(--border); padding:2px 7px; border-radius:6px; color:#cbd5e1; }
+    .actions { display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+    a.btn, button.btn { background:var(--accent); color:#04101d; text-decoration:none; border:none; padding:8px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; cursor:pointer; white-space:nowrap; }
+    code { background:#020617; padding:2px 6px; border-radius:4px; font-size:0.82rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>🎮 MPS3 App Store</h1>
+        <p class="sub">Repositório oficial de sub-apps ELF e novas capacidades para o <strong>MPS3</strong> sem precisar de flash serial ou OTA. Abra a aba <strong>Loja</strong> em <code>http://mps3.local</code> ou baixe o <code>.elf</code> para instalação offline.</p>
+      </div>
+      <a class="pill" href="http://mps3.local" target="_blank" rel="noopener">Abrir Central MPS3 →</a>
+    </header>
+
+    <div class="toolbar">
+      <div class="cats" id="cats">
+        <button class="cat-btn active" onclick="setCat('Todos')">Todos</button>
+        <button class="cat-btn" onclick="setCat('Jogos')">Jogos</button>
+        <button class="cat-btn" onclick="setCat('Utilitarios')">Utilitários</button>
+        <button class="cat-btn" onclick="setCat('Audio')">Áudio</button>
+      </div>
+      <div class="meta">Catálogo: <code id="catUrl">catalog.json</code> <button class="cat-btn" onclick="copyCatUrl()">📋 Copiar URL</button></div>
+    </div>
+
+    <div id="list" class="grid">Carregando catálogo...</div>
+  </div>
+  <script>
+    let allApps = [];
+    let curCat = 'Todos';
+    const catFullUrl = new URL('catalog.json', window.location.href).href;
+    document.getElementById('catUrl').textContent = catFullUrl;
+
+    window.copyCatUrl = function () {
+      navigator.clipboard && navigator.clipboard.writeText(catFullUrl);
+    };
+
+    window.setCat = function (c) {
+      curCat = c;
+      document.querySelectorAll('#cats .cat-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.replace('Á','A').replace('á','a').toLowerCase() === c.toLowerCase());
+      });
+      render();
+    };
+
+    function render() {
+      const el = document.getElementById('list');
+      const filtered = allApps.filter(a => curCat === 'Todos' || (a.category || 'Jogos').toLowerCase() === curCat.toLowerCase());
+      if (!filtered.length) {
+        el.innerHTML = '<div class="card"><div class="meta">Nenhum sub-app encontrado nesta categoria.</div></div>';
+        return;
+      }
+      el.innerHTML = filtered.map(a => `
+        <div class="card">
+          <div style="flex:1; min-width:240px;">
+            <h2>${a.name} <span class="badge ok">v${a.version}</span> <span class="badge">${a.category || 'Jogos'}</span> <span class="badge">ABI v${a.api_ver || 1}</span></h2>
+            <div class="meta">${a.description || ''}</div>
+            ${a.changelog ? `<div class="meta" style="color:#fbbf24;">• ${a.changelog}</div>` : ''}
+            <div class="meta">Tamanho: ${(a.size / 1024).toFixed(1)} KB • Firmware mín.: ${a.min_fw_ver || 'v2.5'} • SHA-256: <code>${(a.sha256 || '').slice(0, 12)}...</code></div>
+            ${Array.isArray(a.controls) && a.controls.length ? `<div class="controls">${a.controls.map(c => `<span class="ctrl">${c}</span>`).join('')}</div>` : ''}
+          </div>
+          <div class="actions">
+            <a class="btn" href="${a.elf_url}" download="${a.id}.elf">⬇️ Baixar .elf</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    fetch('catalog.json?_=' + Date.now())
+      .then(r => r.json())
+      .then(cat => { allApps = cat.apps || []; render(); })
+      .catch(err => { document.getElementById('list').innerHTML = `<div class="card"><div class="meta">Erro ao carregar catalog.json: ${err.message}</div></div>`; });
+  </script>
+</body>
+</html>

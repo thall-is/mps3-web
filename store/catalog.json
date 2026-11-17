@@ -1,0 +1,26 @@
+{
+  "store_version": 1,
+  "apps": [
+    {
+      "id": "tetris",
+      "name": "Tetris",
+      "version": "1.0.3",
+      "author": "MPS3",
+      "category": "Jogos",
+      "min_fw_ver": "v2.5",
+      "description": "Tetris classico 10x20 com Ghost Piece, 7-Bag e High Score na NVS.",
+      "changelog": "Exibe pontuacao atual (PTS) e recorde (HI) na tela de Pausa.",
+      "controls": [
+        "CIMA: Girar peca",
+        "ESQ / DIR: Mover",
+        "BAIXO: Queda rapida",
+        "CENTRO: Pausar (segurar 1.5s: Sair)"
+      ],
+      "api_ver": 1,
+      "size": 4884,
+      "sha256": "8e5a49a9930ab0e4ab94a5749faa02d6d480c686ff799194f74502adc9cb38da",
+      "elf_url": "apps/tetris/v1.0.3/app.elf",
+      "manifest_url": "apps/tetris/v1.0.3/manifest.json"
+    }
+  ]
+}
