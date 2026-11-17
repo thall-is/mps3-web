@@ -1,0 +1,19 @@
+{
+  "id": "space_impact",
+  "name": "Space Impact",
+  "version": "1.1.0",
+  "author": "MPS3",
+  "category": "Jogos",
+  "min_fw_ver": "v2.5",
+  "description": "Classico Nokia 3310 completo: abertura original, 3 armas especiais, cavernas/terreno, 6 chefes animados e modo Debug.",
+  "changelog": "Armas especiais Mega Beam + Energy Wall, terreno/cavernas na Fase 2+, e 6 chefes originais Nokia.",
+  "controls": [
+    "DIRECOES: Mover nave",
+    "VOL+: Atirar laser",
+    "VOL-: Missil especial",
+    "CENTRO: Pausar (1.5s: Sair)"
+  ],
+  "api_ver": 1,
+  "sha256": "d17daf0d97c0d1f932346d68042a0456fcc3b49ad5a76f8824b7488947208078",
+  "size": 11344
+}
