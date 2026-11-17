@@ -1,0 +1,19 @@
+{
+  "id": "space_impact_2",
+  "name": "Space Impact II",
+  "version": "1.0.0",
+  "author": "MPS3",
+  "category": "Jogos",
+  "min_fw_ver": "v2.5",
+  "description": "Sequencia Nokia 3510 (2002): novos inimigos animados, obstaculos espaciais, escudo, 3 armas especiais e 6 chefes.",
+  "changelog": "Lancamento inicial: Space Impact II completo com sprites dedicados, escudo, cavernas/pilares, Debug e Vida Infinita.",
+  "controls": [
+    "DIRECOES: Mover nave",
+    "VOL+: Atirar laser",
+    "VOL-: Arma especial",
+    "CENTRO: Pausar (1.5s: Sair)"
+  ],
+  "api_ver": 1,
+  "sha256": "5dd8cf85c3fb2edffab9a2db6d6c8f47b42b5f6da08238e295731a7419789886",
+  "size": 13020
+}
